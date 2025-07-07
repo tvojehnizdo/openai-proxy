@@ -1,8 +1,11 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-require("dotenv").config();
-const { Configuration, OpenAIApi } = require("openai");
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import { Configuration, OpenAIApi } from "openai";
+
+// načti .env
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -14,6 +17,7 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+// endpoint pro AI obrázky
 app.post("/api/generate", async (req, res) => {
   try {
     const { prompt } = req.body;
@@ -27,13 +31,13 @@ app.post("/api/generate", async (req, res) => {
     const imageUrl = response.data.data[0].url;
     res.json({ imageUrl });
   } catch (error) {
-    console.error("❌ Chyba při generování obrázku:", error.message);
-    res.status(500).json({ error: "Nepodařilo se vygenerovat obrázek" });
+    console.error("Chyba při volání OpenAI:", error.message);
+    res.status(500).json({ error: "Nepodařilo se vytvořit obrázek" });
   }
 });
 
-// 🚀 Spuštění serveru
+// spuštění
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
-  console.log(`✅ OpenAI proxy běží na portu ${port}`);
+  console.log(`✅ Proxy server běží na http://localhost:${port}`);
 });
