@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -22,14 +21,15 @@ app.post("/api/generate", async (req, res) => {
       n: 1,
       size: "512x512",
     });
-    res.json({ image_url: response.data.data[0].url });
-  } catch (error) {
-    console.error("Error:", error.response?.data || error.message);
-    res.status(500).json({ error: "Image generation failed" });
+
+    res.json({ image: response.data.data[0].url });
+  } catch (err) {
+    console.error("Chyba proxy:", err.message);
+    res.status(500).json({ error: "Chyba při generování obrázku" });
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log(`✅ Proxy běží na portu ${port}`);
 });
